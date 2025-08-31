@@ -4,9 +4,7 @@ export interface Entry {
   date: string;
   weight: number;
   waist: number;
-  calories: number;
-  protein: number;
-  workouts: string;
+  workouts: string[];
   notes: string;
 }
 

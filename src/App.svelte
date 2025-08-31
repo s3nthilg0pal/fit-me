@@ -5,21 +5,19 @@
     date: '',
     weight: 0,
     waist: 0,
-    calories: 0,
-    protein: 0,
-    workouts: '',
+    workouts: [],
     notes: ''
   };
 
+  const workoutOptions = ['Running', 'Cycling', 'Swimming', 'Strength Training', 'Yoga'];
+
   function addEntry() {
-    entries.update((e) => [...e, { ...form }]);
+    entries.update((e) => [...e, { ...form, workouts: [...form.workouts] }]);
     form = {
       date: '',
       weight: 0,
       waist: 0,
-      calories: 0,
-      protein: 0,
-      workouts: '',
+      workouts: [],
       notes: ''
     };
   }
@@ -40,16 +38,12 @@
       <input type="number" step="0.1" bind:value={form.waist} />
     </label>
     <label>
-      <span>Calories</span>
-      <input type="number" bind:value={form.calories} />
-    </label>
-    <label>
-      <span>Protein (g)</span>
-      <input type="number" bind:value={form.protein} />
-    </label>
-    <label>
       <span>Workouts</span>
-      <input type="text" bind:value={form.workouts} />
+      <select multiple bind:value={form.workouts}>
+        {#each workoutOptions as w}
+          <option value={w}>{w}</option>
+        {/each}
+      </select>
     </label>
     <label>
       <span>Notes</span>
@@ -63,6 +57,12 @@
       <div class="entry">
         <div class="date">{e.date}</div>
         <div class="stats">{e.weight} kg · {e.waist} cm</div>
+        {#if e.workouts.length}
+          <div class="workouts">{e.workouts.join(', ')}</div>
+        {/if}
+        {#if e.notes}
+          <div class="notes">{e.notes}</div>
+        {/if}
       </div>
     {/each}
   </section>
@@ -81,7 +81,8 @@
     margin-bottom: 0.75rem;
   }
   input,
-  textarea {
+  textarea,
+  select {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 0.375rem;
