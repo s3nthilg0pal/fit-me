@@ -17,3 +17,15 @@ entries.subscribe((val) => {
     localStorage.setItem('entries', JSON.stringify(val));
   }
 });
+
+export function upsertEntry(entry: Entry) {
+  entries.update((current) => {
+    const index = current.findIndex((e) => e.date === entry.date);
+    if (index !== -1) {
+      const updated = [...current];
+      updated[index] = entry;
+      return updated;
+    }
+    return [...current, entry];
+  });
+}

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { entries, type Entry } from './lib/stores';
+  import { entries, type Entry, upsertEntry } from './lib/stores';
+  import { workoutOptions } from './lib/workouts';
 
   let form: Entry = {
     date: '',
@@ -9,10 +10,8 @@
     notes: ''
   };
 
-  const workoutOptions = ['Running', 'Cycling', 'Swimming', 'Strength Training', 'Yoga'];
-
   function addEntry() {
-    entries.update((e) => [...e, { ...form, workouts: [...form.workouts] }]);
+    upsertEntry({ ...form, workouts: [...form.workouts] });
     form = {
       date: '',
       weight: 0,
@@ -41,7 +40,7 @@
       <span>Workouts</span>
       <select multiple bind:value={form.workouts}>
         {#each workoutOptions as w}
-          <option value={w}>{w}</option>
+          <option value={w.workout}>{w.workout}</option>
         {/each}
       </select>
     </label>
