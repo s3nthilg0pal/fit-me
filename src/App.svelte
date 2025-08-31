@@ -1,47 +1,109 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import { entries, type Entry } from './lib/stores';
+
+  let form: Entry = {
+    date: '',
+    weight: 0,
+    waist: 0,
+    calories: 0,
+    protein: 0,
+    workouts: '',
+    notes: ''
+  };
+
+  function addEntry() {
+    entries.update((e) => [...e, { ...form }]);
+    form = {
+      date: '',
+      weight: 0,
+      waist: 0,
+      calories: 0,
+      protein: 0,
+      workouts: '',
+      notes: ''
+    };
+  }
 </script>
 
-<main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<main class="container">
+  <form on:submit|preventDefault={addEntry} class="form">
+    <label>
+      <span>Date</span>
+      <input type="date" bind:value={form.date} required />
+    </label>
+    <label>
+      <span>Weight (kg)</span>
+      <input type="number" step="0.1" bind:value={form.weight} required />
+    </label>
+    <label>
+      <span>Waist (cm)</span>
+      <input type="number" step="0.1" bind:value={form.waist} />
+    </label>
+    <label>
+      <span>Calories</span>
+      <input type="number" bind:value={form.calories} />
+    </label>
+    <label>
+      <span>Protein (g)</span>
+      <input type="number" bind:value={form.protein} />
+    </label>
+    <label>
+      <span>Workouts</span>
+      <input type="text" bind:value={form.workouts} />
+    </label>
+    <label>
+      <span>Notes</span>
+      <textarea rows="3" bind:value={form.notes}></textarea>
+    </label>
+    <button type="submit">Save</button>
+  </form>
 
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
+  <section class="entries">
+    {#each $entries as e, i}
+      <div class="entry">
+        <div class="date">{e.date}</div>
+        <div class="stats">{e.weight} kg · {e.waist} cm</div>
+      </div>
+    {/each}
+  </section>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1rem;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  .form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+  input,
+  textarea {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.375rem;
   }
-  .read-the-docs {
-    color: #888;
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+  .entries .entry {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .entries .entry:last-child {
+    border-bottom: none;
+  }
+  @media (max-width: 640px) {
+    .container {
+      padding: 0.5rem;
+    }
   }
 </style>
